@@ -2,16 +2,12 @@
 
 SmartLens is an AI-powered image analysis system that integrates multiple computer vision techniques into a single application. It allows users to upload images and automatically extract meaningful information such as detected objects, text, and barcodes.
 
----
-
 ## 🚀 Features
 
 * 🧠 Object Detection using YOLOv8
 * 🔤 Text Extraction using OCR
 * 📦 Barcode & QR Code Scanning
 * 🌐 Language Translation
-
----
 
 ## 🛠️ Tech Stack
 
@@ -20,8 +16,6 @@ SmartLens is an AI-powered image analysis system that integrates multiple comput
 * OpenCV
 * YOLOv8 (Ultralytics)
 * Tesseract OCR
-
----
 
 ## ⚙️ How It Works
 
@@ -34,13 +28,9 @@ SmartLens is an AI-powered image analysis system that integrates multiple comput
    * Barcode/QR Scanner
 4. Results are displayed on the screen
 
----
-
 ## 🧠 System Architecture
 
 User Input → Flask Backend → AI Modules (YOLO + OCR + Barcode) → Output Display
-
----
 
 ## 📂 Project Structure
 
@@ -90,20 +80,15 @@ pip install -r requirements.txt
 
 4. Run the application:
 
-```
 python app.py
-```
 
----
 
-## 📸 Screenshots
 
 ## 🏠 Homepage
 
 ![Homepage](Homepage1.png)
 ![Homepage](Homepage2.png)
 
----
 
 ## 🔍 Object Detection
 
@@ -111,29 +96,21 @@ python app.py
 ![Detection](Rose_Image_Detection.png)
 ![Detection](Sunflower_Image_Detection.png)
 
----
 
 ## 🔤 OCR
 
 ![OCR Input](OCR_Input.png)
 ![OCR Output](OCR_Output.png)
 
----
 
 ## 📦 Barcode Scanner
 
 ![Barcode Input](Barcode_Input.png)
 ![Barcode Output](Barcode_Output.png)
 
----
 
 ## 📌 Note
 
 * YOLO model weights (.pt files) are not included due to size limitations
 * Download models from: https://github.com/ultralytics/ultralytics
 
----
-
-## 👩‍💻 Author
-
-Tanya
