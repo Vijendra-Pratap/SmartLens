@@ -1,0 +1,31 @@
+
+# pip install -r requirements.txt
+
+flask>=3.0.0
+Werkzeug>=3.0.0
+
+# Detection
+ultralytics>=8.2.0
+opencv-python>=4.9.0.80
+numpy>=1.26.0
+Pillow>=10.3.0
+
+# CLIP (semantic label refinement)
+transformers>=4.40.0
+torch>=2.2.0
+sentencepiece>=0.2.0
+sacremoses>=0.1.1
+langdetect>=1.0.9
+
+# OCR
+easyocr>=1.7.1
+
+# Barcode
+pyzbar>=0.1.9
+# sudo apt install libzbar0
+
+# Math solving (local, free)
+sympy>=1.12
+
+# Optional (used by some ultralytics internals)
+requests>=2.31.0

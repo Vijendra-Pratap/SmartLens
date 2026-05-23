@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Smart Lens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+<div class="app-shell">
+  <div class="screen-camera" id="screenCamera">
+    <div class="status-bar">
+      <span class="status-time" id="clockTime">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 8.5a13 13 0 0 1 21 0M5 12a10 10 0 0 1 14 0M8.5 15.5a6 6 0 0 1 7 0M12 19h.01"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2" stroke-width="2"/></svg>
+      </div>
+    </div>
+    <div class="viewfinder" id="viewfinder" onclick="handleViewfinderClick()">
+      <div class="cam-bg"></div>
+      <video id="camVideo" autoplay playsinline muted style="display:none"></video>
+      <img id="previewImg" alt="preview">
+      <div class="upload-hint" id="uploadHint">
+        <div class="hint-lens">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><circle cx="11" cy="11" r="3" stroke-opacity=".5"/></svg>
+        </div>
+        <div class="hint-title">Point &amp; Discover</div>
+        <div class="hint-sub">Tap to upload a photo or use your camera to identify anything around you</div>
+      </div>
+      <div class="viewfinder-guides" id="vfGuides" style="display:none">
+        <div class="guide-corner gc-tl"></div>
+        <div class="guide-corner gc-tr"></div>
+        <div class="guide-corner gc-bl"></div>
+        <div class="guide-corner gc-br"></div>
+      </div>
+      <canvas id="detectionCanvas"></canvas>
+    </div>
+    <div class="top-bar">
+      <div class="logo-pill">
+        <div class="logo-dot"></div>
+        <span class="logo-name">Smart Lens</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div class="icon-btn" onclick="toggleCamera()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div class="icon-btn" onclick="document.getElementById('fileInput').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="query-bar" id="queryBar">
+      <div class="query-wrap">
+        <input class="query-input" type="text" id="userQuery" placeholder="Ask something about this image…" autocomplete="off">
+        <div class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Voice input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+      </div>
+      <div class="query-chips">
+        <div class="qchip" onclick="setQuery('What is this?')">🔍 What is this?</div>
+        <div class="qchip" onclick="setQuery('Solve this')">📐 Solve this</div>
+        <div class="qchip" onclick="setQuery('Translate')">🌍 Translate</div>
+        <div class="qchip" onclick="setQuery('Buy this')">🛒 Buy this</div>
+        <div class="qchip" onclick="setQuery('Explain')">💡 Explain</div>
+      </div>
+    </div>
+    <div class="lang-bar">
+      <div class="lang-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A7A72" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>Language</span>
+        <select class="lang-sel" id="langSel">
+          <option value="English">English</option>
+          <option value="Hindi">हिन्दी</option>
+          <option value="Tamil">தமிழ்</option>
+          <option value="Telugu">తెలుగు</option>
+          <option value="Bengali">বাংলা</option>
+          <option value="Marathi">मराठी</option>
+          <option value="Gujarati">ગુજરાતી</option>
+          <option value="Kannada">ಕನ್ನಡ</option>
+          <option value="Malayalam">മലയാളം</option>
+          <option value="Punjabi">ਪੰਜਾਬੀ</option>
+          <option value="Urdu">اردو</option>
+        </select>
+      </div>
+    </div>
+    <div class="cam-controls">
+      <div class="ctrl-side">
+        <button class="btn-pill" onclick="document.getElementById('fileInput').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Gallery
+        </button>
+      </div>
+      <button class="btn-shutter" id="btnShutter" onclick="handleShutter()"></button>
+      <div class="ctrl-side">
+        <button class="btn-pill orange" onclick="triggerAnalyze()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analyze
+        </button>
+      </div>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+    <canvas id="camCanvas" style="display:none"></canvas>
+  </div>
+
+  <div class="screen-analyzing hidden" id="screenAnalyzing">
+    <div class="analyzing-orb">
+      <div class="orb-ring orb-ring-1"></div>
+      <div class="orb-ring orb-ring-2"></div>
+      <div class="orb-ring orb-ring-3"></div>
+      <div class="orb-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+    </div>
+    <div class="analyzing-text"><span class="shimmer-text" id="analyzingMsg">Let me take a look…</span></div>
+    <div class="analyzing-sub" id="analyzingStep">Running visual analysis</div>
+    <div class="step-dots">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+      <div class="step-dot" id="dot4"></div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+
+  <div class="results-sheet" id="resultsSheet">
+    <div class="sheet-glow"></div>
+    <div class="sheet-light"></div>
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-greeting">Here's what I found</div>
+        <div class="sheet-title" id="sheetTitle">Loading…</div>
+        <div class="sheet-conf" id="sheetConf"></div>
+      </div>
+      <button class="sheet-close" onclick="closeResults()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-scroll" id="sheetScroll"></div>
+  </div>
+
+  <div class="sheet-actions hidden" id="sheetActions">
+    <button class="btn-action btn-primary" onclick="resetApp()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+      New scan
+    </button>
+  </div>
+</div>
+<script src="/static/script.js"></script>
+</body>
+</html>
